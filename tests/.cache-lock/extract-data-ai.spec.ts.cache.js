@@ -106,20 +106,7 @@ module.exports = {
       allowedTools: [],
       maxToolCalls: 50,
       run: async ({ page }) => {
-        // Accepting cookies to dismiss the banner and access the main site content for searching.
-        await page
-          .find(
-            '#pandectes-banner > div > div:nth-of-type(2) > button:nth-of-type(2)',
-            {
-              failover: [
-                ".//button[normalize-space(.)='Accept']",
-                'div.cc-compliance > button:nth-of-type(2)',
-              ],
-            },
-          )
-          .click('left');
-
-        // Opening the search bar to search for 'carry-on'.
+        // Clicking the search icon to open the search input field so I can search for "carry-on".
         await page
           .find("(.//button[normalize-space(.)='Search'])[2]", {
             failover: [
@@ -129,7 +116,7 @@ module.exports = {
           })
           .click('left');
 
-        // Searching for 'carry-on' to find relevant products.
+        // Searching for "carry-on" by typing it into the search input field and submitting.
         await page
           .find('#header-search-input', {
             failover: [
@@ -139,10 +126,10 @@ module.exports = {
           })
           .inputText('carry-on', { submit: true });
 
-        // Clicking on the first product result for 'carry-on' to go to its product page.
+        // Clicking on the first product result for "carry-on" to go to its product page.
         await page
           .find(
-            "[href='/products/carry-on-coast-blue?_pos=1&_psq=carry-on&_ss=e&_v=1.0']",
+            "[href='/products/carry-on-navy-blue?_pos=1&_psq=carry-on&_ss=e&_v=1.0']",
             {
               failover: [
                 'li:nth-of-type(1) > div > a.product-tile-search__link',
@@ -152,10 +139,10 @@ module.exports = {
           )
           .click('left');
 
-        // The objective was to search for "carry-on" and go to the first product page, which has been accomplished.
+        // The objective was to go to the first product page after searching for "carry-on", and I am now on that page.
         await page.run('markObjectiveComplete', {
           details:
-            'Successfully searched for "carry-on" and navigated to the product page for "The Carry-On".',
+            'I searched for "carry-on" and navigated to the product page for "The Carry-On in Navy Blue", which was the first product result.',
         });
       },
     },
