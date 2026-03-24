@@ -36,3 +36,21 @@ jobs:
           name: test-results
           path: test-results/
           retention-days: 14
+
+      - name: Check for fixes for tests
+        id: check-fixes-for-tests
+        run: |
+          if [ -n "$(git diff --name-only -- tests/)" ]; then
+            echo "has_fixes=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Create PR for healed tests
+        if: ${{ github.event_name != 'pull_request' && steps.check-fixes-for-tests.outputs.has_fixes == 'true'  }}
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: 'Fix failing Playwright tests'
+          title: '[Auto-healed] Playwright tests'
+          body: 'Automatically healed failing Playwright tests with updated cache.'
+          branch: fix-playwright-tests-for-${{ github.ref_name }}
+          base: ${{ github.ref_name }}
