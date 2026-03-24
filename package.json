@@ -13,7 +13,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "donobu": "^5.8.3",
+    "donobu": "^5.9.2",
     "zod": "^4.3.6"
   }
 }
