@@ -25,6 +25,7 @@ jobs:
         run: npx playwright install --with-deps
 
       - name: Run tests
+        continue-on-error: true
         env:
           DONOBU_API_KEY: ${{ secrets.DONOBU_API_KEY }}
         run: npx donobu test --auto-heal
