@@ -59,3 +59,22 @@ jobs:
           body: 'Automatically healed failing Playwright tests with updated cache.'
           branch: fix-playwright-tests-for-${{ github.ref_name }}
           base: ${{ github.ref_name }}
+
+      - name: Generate Test Reports
+        if: always()
+        run: |
+          npm exec playwright-json-to-markdown test-results/report.json >> $GITHUB_STEP_SUMMARY
+          npm exec playwright-json-to-html test-results/report.json
+
+      - name: Post to Slack
+        if: always()
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          if [ -n "$SLACK_WEBHOOK_URL" ]; then
+            WORKFLOW_URL="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+            SLACK_PAYLOAD=$(npx playwright-json-to-slack-json --report-url "$WORKFLOW_URL" test-results/report.json)
+            curl --header 'Content-type: application/json' --data "$SLACK_PAYLOAD" "$SLACK_WEBHOOK_URL"
+          else
+            echo "SLACK_WEBHOOK_URL secret not present, skipping Slack notification."
+          fi
